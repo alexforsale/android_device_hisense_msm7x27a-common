@@ -25,14 +25,17 @@ def CleanGoldfish(self):
     self.script.AppendExtra('ui_print("            this is a cm9 build                     ");')
     self.script.AppendExtra('ui_print("                 based on                           ");')
     self.script.AppendExtra('ui_print("          alexforsale device tree                   ");')
-    self.script.AppendExtra('ui_print("github.com/alexforsale/android_device_hisense_AD683G");')
+    self.script.AppendExtra('ui_print("       android_device_hisense_AD683G                ");')
+    self.script.AppendExtra('ui_print("        at github.com/alexforsale/                  ");')
 
 def RunEFSBackup(self):
     self.script.AppendExtra('ui_print("Backing Up EFS Partitions to /sdcard/EFS_BACKUPS/");')
     self.script.AppendExtra('package_extract_file("system/bin/efsbackup.sh", "/tmp/efsbackup.sh");')
     self.script.AppendExtra('set_perm(0, 0, 0777, "/tmp/efsbackup.sh");')
     self.script.AppendExtra('run_program("/tmp/efsbackup.sh");')
-    self.script.AppendExtra('ui_print("Finished Backing Up EFS Partitions");')
+    self.script.AppendExtra('ui_print("      Finished Backing Up EFS Partitions            ");')
+    self.script.AppendExtra('ui_print("        in case something went wrong                ");')
+    self.script.AppendExtra('ui_print("          use dd to restore them                    ");')
 
 def FullOTA_Assertions(self):
    RunEFSBackup(self)
