@@ -21,8 +21,6 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
 $(call inherit-product, device/common/gps/gps_as_supl.mk)
 
-LOCAL_PATH := device/hisense/msm7x27a-common
-
 # Inherit hdpi  
 PRODUCT_AAPT_CONFIG := normal hdpi
 PRODUCT_AAPT_PREF_CONFIG := hdpi
@@ -97,7 +95,10 @@ PRODUCT_PACKAGES += \
     setup_fs
 
 PRODUCT_COPY_FILES += \
-   $(LOCAL_PATH)/persist.prop:$(PRODUCT_OUT)/persist/persist.prop
+   $(LOCAL_PATH)/persist.prop:$(PRODUCT_OUT)/persist/persist.prop \
+   $(LOCAL_PATH)/hostapd.conf:$(PRODUCT_OUT)/data/misc/wifi/hostapd.conf \
+   $(LOCAL_PATH)/hostapd.accept:$(PRODUCT_OUT)/data/hostapd/hostapd.accept \
+   $(LOCAL_PATH)/hostapd.deny:$(PRODUCT_OUT)/data/hostapd/hostapd.deny \
 
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.vendor.extension_library=/system/lib/libqc-opt.so \
