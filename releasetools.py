@@ -25,7 +25,6 @@ def CleanGoldfish(self):
     self.script.AppendExtra('ui_print("            this is a cm9 build                     ");')
     self.script.AppendExtra('ui_print("                 based on                           ");')
     self.script.AppendExtra('ui_print("          alexforsale device tree                   ");')
-    self.script.AppendExtra('ui_print("       android_device_hisense_AD683G                ");')
     self.script.AppendExtra('ui_print("        at github.com/alexforsale/                  ");')
 
 def RunEFSBackup(self):
