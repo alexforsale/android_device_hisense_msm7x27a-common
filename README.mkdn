@@ -1,0 +1,4 @@
+android_device_hisense_msm7627a-common
+======================================
+
+common Codeaurora's AOSP ROM tree for AD683G and possibly AD686G
