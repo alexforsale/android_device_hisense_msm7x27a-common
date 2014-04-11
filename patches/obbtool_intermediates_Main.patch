@@ -1,0 +1,15 @@
+ core/combo/HOST_linux-x86.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/build/core/combo/HOST_linux-x86.mk b/build/core/combo/HOST_linux-x86.mk
+index 5ae4972..7df2893 100644
+--- a/build/core/combo/HOST_linux-x86.mk
++++ b/build/core/combo/HOST_linux-x86.mk
+@@ -53,6 +53,6 @@ HOST_GLOBAL_CFLAGS += \
+ 	-include $(call select-android-config-h,linux-x86)
+ 
+ # Disable new longjmp in glibc 2.11 and later. See bug 2967937.
+-HOST_GLOBAL_CFLAGS += -D_FORTIFY_SOURCE=0
++HOST_GLOBAL_CFLAGS += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0
+ 
+ HOST_NO_UNDEFINED_LDFLAGS := -Wl,--no-undefined

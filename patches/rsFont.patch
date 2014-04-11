@@ -1,0 +1,13 @@
+diff --git a/frameworks/base/libs/rs/Android.mk b/frameworks/base/libs/rs/Android.mk
+index 06cccd8..4f96386 100644
+--- a/frameworks/base/libs/rs/Android.mk
++++ b/frameworks/base/libs/rs/Android.mk
+@@ -181,7 +181,7 @@ $(GEN): $(intermediates)/%.cpp : $(LOCAL_PATH)/%.cpp.rsg
+ 
+ LOCAL_GENERATED_SOURCES += $(GEN)
+ 
+-LOCAL_CFLAGS += -Werror -Wall -Wno-unused-parameter -Wno-unused-variable
++LOCAL_CFLAGS += -Werror -Wall -Wno-unused-parameter -Wno-unused-variable -fpermissive
+ LOCAL_CFLAGS += -DANDROID_RS_SERIALIZE
+ LOCAL_CFLAGS += -fPIC
+ 

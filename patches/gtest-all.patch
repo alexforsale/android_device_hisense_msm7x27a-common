@@ -1,0 +1,35 @@
+diff --git a/external/gtest/include/gtest/internal/gtest-param-util.h b/external/gtest/include/gtest/internal/gtest-param-util.h
+index 5559ab4..757a1e6 100644
+--- a/external/gtest/include/gtest/internal/gtest-param-util.h
++++ b/external/gtest/include/gtest/internal/gtest-param-util.h
+@@ -37,7 +37,7 @@
+ #include <iterator>
+ #include <utility>
+ #include <vector>
+-
++#include <stddef.h>
+ #include <gtest/internal/gtest-port.h>
+ 
+ #if GTEST_HAS_PARAM_TEST
+diff --git a/external/gtest/src/Android.mk b/external/gtest/src/Android.mk
+index 2465e16..1d93ac8 100644
+--- a/external/gtest/src/Android.mk
++++ b/external/gtest/src/Android.mk
+@@ -49,7 +49,7 @@ LOCAL_SRC_FILES := gtest-all.cc
+ 
+ LOCAL_C_INCLUDES := $(libgtest_host_includes)
+ 
+-LOCAL_CFLAGS += -O0
++LOCAL_CFLAGS += -O0 -fpermissive
+ 
+ LOCAL_MODULE := libgtest_host
+ LOCAL_MODULE_TAGS := eng
+@@ -67,7 +67,7 @@ LOCAL_SRC_FILES := gtest_main.cc
+ 
+ LOCAL_C_INCLUDES := $(libgtest_host_includes)
+ 
+-LOCAL_CFLAGS += -O0
++LOCAL_CFLAGS += -O0 -fpermissive
+ 
+ LOCAL_STATIC_LIBRARIES := libgtest
+ 

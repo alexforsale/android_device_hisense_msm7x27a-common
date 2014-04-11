@@ -1,0 +1,354 @@
+ tools/thirdparty/OpenFst/fst/lib/cache.h         |  6 ++---
+ tools/thirdparty/OpenFst/fst/lib/compose.h       |  6 ++---
+ tools/thirdparty/OpenFst/fst/lib/const-fst.h     |  4 ++--
+ tools/thirdparty/OpenFst/fst/lib/determinize.h   |  8 +++----
+ tools/thirdparty/OpenFst/fst/lib/factor-weight.h | 14 +++++------
+ tools/thirdparty/OpenFst/fst/lib/map.h           | 22 ++++++++---------
+ tools/thirdparty/OpenFst/fst/lib/vector-fst.h    | 30 ++++++++++++------------
+ 7 files changed, 45 insertions(+), 45 deletions(-)
+
+diff --git a/external/srec/tools/thirdparty/OpenFst/fst/lib/cache.h b/external/srec/tools/thirdparty/OpenFst/fst/lib/cache.h
+index ec00d5a..74ea934 100644
+--- a/external/srec/tools/thirdparty/OpenFst/fst/lib/cache.h
++++ b/external/srec/tools/thirdparty/OpenFst/fst/lib/cache.h
+@@ -129,11 +129,11 @@ class CacheBaseImpl : public VectorFstBaseImpl<S> {
+       while (NumStates() <= s)                     // Add state to main cache
+         AddState(0);
+       if (!VectorFstBaseImpl<S>::GetState(s)) {
+-        SetState(s, new S);
++        this->SetState(s, new S);
+         if (cache_first_state_id_ != kNoStateId) {  // Forget 1st cached state
+           while (NumStates() <= cache_first_state_id_)
+             AddState(0);
+-          SetState(cache_first_state_id_, cache_first_state_);
++          this->SetState(cache_first_state_id_, cache_first_state_);
+           if (cache_gc_) {
+             cache_states_.push_back(cache_first_state_id_);
+             cache_size_ += sizeof(S) +
+@@ -287,7 +287,7 @@ class CacheBaseImpl : public VectorFstBaseImpl<S> {
+           (free_recent || !(state->flags & kCacheRecent)) && s != current) {
+         cache_size_ -= sizeof(S) + state->arcs.capacity() * sizeof(Arc);
+         delete state;
+-        SetState(s, 0);
++        this->SetState(s, 0);
+         cache_states_.erase(siter++);
+       } else {
+         state->flags &= ~kCacheRecent;
+diff --git a/external/srec/tools/thirdparty/OpenFst/fst/lib/compose.h b/external/srec/tools/thirdparty/OpenFst/fst/lib/compose.h
+index 24b169f..0783ea5 100644
+--- a/external/srec/tools/thirdparty/OpenFst/fst/lib/compose.h
++++ b/external/srec/tools/thirdparty/OpenFst/fst/lib/compose.h
+@@ -128,7 +128,7 @@ class ComposeFstImplBase : public CacheImpl<A> {
+     if (!HasStart()) {
+       StateId start = ComputeStart();
+       if (start != kNoStateId) {
+-        SetStart(start);
++        this->SetStart(start);
+       }
+     }
+     return CacheImpl<A>::Start();
+@@ -137,7 +137,7 @@ class ComposeFstImplBase : public CacheImpl<A> {
+   Weight Final(StateId s) {
+     if (!HasFinal(s)) {
+       Weight final = ComputeFinal(s);
+-      SetFinal(s, final);
++      this->SetFinal(s, final);
+     }
+     return CacheImpl<A>::Final(s);
+   }
+@@ -583,7 +583,7 @@ class ComposeFstImpl : public ComposeFstImplBase<A> {
+         AddArc(s, earca, arcb, numepsa > 0, find_input);  // move on epsilon
+       }
+     }
+-    SetArcs(s);
++    this->SetArcs(s);
+    }
+ 
+ 
+diff --git a/external/srec/tools/thirdparty/OpenFst/fst/lib/const-fst.h b/external/srec/tools/thirdparty/OpenFst/fst/lib/const-fst.h
+index 74f0c91..ebeeb34 100644
+--- a/external/srec/tools/thirdparty/OpenFst/fst/lib/const-fst.h
++++ b/external/srec/tools/thirdparty/OpenFst/fst/lib/const-fst.h
+@@ -119,8 +119,8 @@ ConstFstImpl<A>::ConstFstImpl(const Fst<A> &fst) : nstates_(0), narcs_(0) {
+   SetType("const");
+   uint64 copy_properties = fst.Properties(kCopyProperties, true);
+   SetProperties(copy_properties | kStaticProperties);
+-  SetInputSymbols(fst.InputSymbols());
+-  SetOutputSymbols(fst.OutputSymbols());
++  this->SetInputSymbols(fst.InputSymbols());
++  this->SetOutputSymbols(fst.OutputSymbols());
+   start_ = fst.Start();
+ 
+   // count # of states and arcs
+diff --git a/external/srec/tools/thirdparty/OpenFst/fst/lib/determinize.h b/external/srec/tools/thirdparty/OpenFst/fst/lib/determinize.h
+index 63b96ec..8a2f4dc 100644
+--- a/external/srec/tools/thirdparty/OpenFst/fst/lib/determinize.h
++++ b/external/srec/tools/thirdparty/OpenFst/fst/lib/determinize.h
+@@ -148,7 +148,7 @@ class DeterminizeFstImplBase : public CacheImpl<A> {
+     if (!HasStart()) {
+       StateId start = ComputeStart();
+       if (start != kNoStateId) {
+-        SetStart(start);
++        this->SetStart(start);
+       }
+     }
+     return CacheImpl<A>::Start();
+@@ -157,7 +157,7 @@ class DeterminizeFstImplBase : public CacheImpl<A> {
+   Weight Final(StateId s) {
+     if (!HasFinal(s)) {
+       Weight final = ComputeFinal(s);
+-      SetFinal(s, final);
++      this->SetFinal(s, final);
+     }
+     return CacheImpl<A>::Final(s);
+   }
+@@ -293,8 +293,8 @@ class DeterminizeFsaImpl : public DeterminizeFstImplBase<A> {
+     for (typename LabelMap::iterator liter = label_map.begin();
+          liter != label_map.end();
+          ++liter)
+-      AddArc(s, liter->first, liter->second);
+-    SetArcs(s);
++      this->AddArc(s, liter->first, liter->second);
++    this->SetArcs(s);
+   }
+ 
+  private:
+diff --git a/external/srec/tools/thirdparty/OpenFst/fst/lib/factor-weight.h b/external/srec/tools/thirdparty/OpenFst/fst/lib/factor-weight.h
+index 3a2ef85..073a476 100644
+--- a/external/srec/tools/thirdparty/OpenFst/fst/lib/factor-weight.h
++++ b/external/srec/tools/thirdparty/OpenFst/fst/lib/factor-weight.h
+@@ -180,7 +180,7 @@ class FactorWeightFstImpl
+       if (s == kNoStateId)
+         return kNoStateId;
+       StateId start = FindState(Element(fst_->Start(), Weight::One()));
+-      SetStart(start);
++      this->SetStart(start);
+     }
+     return CacheImpl<A>::Start();
+   }
+@@ -194,9 +194,9 @@ class FactorWeightFstImpl
+                  : (Weight) Times(e.weight, fst_->Final(e.state));
+       FactorIterator f(w);
+       if (w != Weight::Zero() && f.Done())
+-        SetFinal(s, w);
++        this->SetFinal(s, w);
+       else
+-        SetFinal(s, Weight::Zero());
++        this->SetFinal(s, Weight::Zero());
+     }
+     return CacheImpl<A>::Final(s);
+   }
+@@ -263,13 +263,13 @@ class FactorWeightFstImpl
+         FactorIterator fit(w);
+         if (final_only_ || fit.Done()) {
+           StateId d = FindState(Element(arc.nextstate, Weight::One()));
+-          AddArc(s, Arc(arc.ilabel, arc.olabel, w, d));
++          this->AddArc(s, Arc(arc.ilabel, arc.olabel, w, d));
+         } else {
+           for (; !fit.Done(); fit.Next()) {
+             const pair<Weight, Weight> &p = fit.Value();
+             StateId d = FindState(Element(arc.nextstate,
+                                           p.second.Quantize(delta_)));
+-            AddArc(s, Arc(arc.ilabel, arc.olabel, p.first, d));
++            this->AddArc(s, Arc(arc.ilabel, arc.olabel, p.first, d));
+           }
+         }
+       }
+@@ -285,10 +285,10 @@ class FactorWeightFstImpl
+         const pair<Weight, Weight> &p = fit.Value();
+         StateId d = FindState(Element(kNoStateId,
+                                       p.second.Quantize(delta_)));
+-        AddArc(s, Arc(0, 0, p.first, d));
++        this->AddArc(s, Arc(0, 0, p.first, d));
+       }
+     }
+-    SetArcs(s);
++    this->SetArcs(s);
+   }
+ 
+  private:
+diff --git a/external/srec/tools/thirdparty/OpenFst/fst/lib/map.h b/external/srec/tools/thirdparty/OpenFst/fst/lib/map.h
+index 722aef3..5d56ebe 100644
+--- a/external/srec/tools/thirdparty/OpenFst/fst/lib/map.h
++++ b/external/srec/tools/thirdparty/OpenFst/fst/lib/map.h
+@@ -294,7 +294,7 @@ class MapFstImpl : public CacheImpl<B> {
+ 
+   StateId Start() {
+     if (!HasStart())
+-      SetStart(FindOState(fst_->Start()));
++      this->SetStart(FindOState(fst_->Start()));
+     return CacheImpl<B>::Start();
+   }
+ 
+@@ -306,24 +306,24 @@ class MapFstImpl : public CacheImpl<B> {
+           B final_arc = (*mapper_)(A(0, 0, fst_->Final(FindIState(s)),
+                                         kNoStateId));
+           CHECK(final_arc.ilabel == 0 && final_arc.olabel == 0);
+-          SetFinal(s, final_arc.weight);
++          this->SetFinal(s, final_arc.weight);
+           break;
+         }
+         case MAP_ALLOW_SUPERFINAL: {
+           if (s == superfinal_) {
+-            SetFinal(s, Weight::One());
++            this->SetFinal(s, Weight::One());
+           } else {
+             B final_arc = (*mapper_)(A(0, 0, fst_->Final(FindIState(s)),
+                                           kNoStateId));
+             if (final_arc.ilabel == 0 && final_arc.olabel == 0)
+-              SetFinal(s, final_arc.weight);
++              this->SetFinal(s, final_arc.weight);
+             else
+-              SetFinal(s, Weight::Zero());
++              this->SetFinal(s, Weight::Zero());
+           }
+           break;
+         }
+         case MAP_REQUIRE_SUPERFINAL: {
+-          SetFinal(s, s == superfinal_ ? Weight::One() : Weight::Zero());
++          this->SetFinal(s, s == superfinal_ ? Weight::One() : Weight::Zero());
+           break;
+         }
+       }
+@@ -357,14 +357,14 @@ class MapFstImpl : public CacheImpl<B> {
+ 
+   void Expand(StateId s) {
+     // Add exiting arcs.
+-    if (s == superfinal_) { SetArcs(s); return; }
++    if (s == superfinal_) { this->SetArcs(s); return; }
+ 
+     for (ArcIterator< Fst<A> > aiter(*fst_, FindIState(s));
+          !aiter.Done(); aiter.Next()) {
+       A aarc(aiter.Value());
+       aarc.nextstate = FindOState(aarc.nextstate);
+       const B& barc = (*mapper_)(aarc);
+-      AddArc(s, barc);
++      this->AddArc(s, barc);
+     }
+ 
+     // Check for superfinal arcs.
+@@ -380,7 +380,7 @@ class MapFstImpl : public CacheImpl<B> {
+             if (superfinal_ == kNoStateId)
+               superfinal_ = nstates_++;
+             final_arc.nextstate = superfinal_;
+-            AddArc(s, final_arc);
++            this->AddArc(s, final_arc);
+           }
+           break;
+         }
+@@ -389,12 +389,12 @@ class MapFstImpl : public CacheImpl<B> {
+                                       kNoStateId));
+         if (final_arc.ilabel != 0 || final_arc.olabel != 0 ||
+             final_arc.weight != B::Weight::Zero())
+-          AddArc(s, B(final_arc.ilabel, final_arc.olabel,
++          this->AddArc(s, B(final_arc.ilabel, final_arc.olabel,
+                       final_arc.weight, superfinal_));
+         break;
+       }
+     }
+-    SetArcs(s);
++    this->SetArcs(s);
+   }
+ 
+  private:
+diff --git a/external/srec/tools/thirdparty/OpenFst/fst/lib/vector-fst.h b/external/srec/tools/thirdparty/OpenFst/fst/lib/vector-fst.h
+index 8e99521..5950e6f 100644
+--- a/external/srec/tools/thirdparty/OpenFst/fst/lib/vector-fst.h
++++ b/external/srec/tools/thirdparty/OpenFst/fst/lib/vector-fst.h
+@@ -197,9 +197,9 @@ class VectorFstImpl : public VectorFstBaseImpl< VectorState<A> > {
+ 
+   static VectorFstImpl<A> *Read(istream &strm, const FstReadOptions &opts);
+ 
+-  size_t NumInputEpsilons(StateId s) const { return GetState(s)->niepsilons; }
++  size_t NumInputEpsilons(StateId s) const { return this->GetState(s)->niepsilons; }
+ 
+-  size_t NumOutputEpsilons(StateId s) const { return GetState(s)->noepsilons; }
++  size_t NumOutputEpsilons(StateId s) const { return this->GetState(s)->noepsilons; }
+ 
+   bool Write(ostream &strm, const FstWriteOptions &opts) const;
+ 
+@@ -211,7 +211,7 @@ class VectorFstImpl : public VectorFstBaseImpl< VectorState<A> > {
+   }
+ 
+   void SetFinal(StateId s, Weight w) {
+-    Weight ow = Final(s);
++    Weight ow = this->Final(s);
+     if (ow != Weight::Zero() && ow != Weight::One())
+       SetProperties(Properties() & ~kWeighted);
+     BaseImpl::SetFinal(s, w);
+@@ -230,7 +230,7 @@ class VectorFstImpl : public VectorFstBaseImpl< VectorState<A> > {
+   }
+ 
+   void AddArc(StateId s, const A &arc) {
+-    VectorState<A> *state = GetState(s);
++    VectorState<A> *state = this->GetState(s);
+     if (arc.ilabel != arc.olabel) {
+       SetProperties(Properties() | kNotAcceptor);
+       SetProperties(Properties() & ~kAcceptor);
+@@ -288,21 +288,21 @@ class VectorFstImpl : public VectorFstBaseImpl< VectorState<A> > {
+   }
+ 
+   void DeleteArcs(StateId s, size_t n) {
+-    const vector<A> &arcs = GetState(s)->arcs;
++    const vector<A> &arcs = this->GetState(s)->arcs;
+     for (size_t i = 0; i < n; ++i) {
+       size_t j = arcs.size() - i - 1;
+       if (arcs[j].ilabel == 0)
+-        --GetState(s)->niepsilons;
++        --this->GetState(s)->niepsilons;
+       if (arcs[j].olabel == 0)
+-        --GetState(s)->noepsilons;
++        --this->GetState(s)->noepsilons;
+     }
+     BaseImpl::DeleteArcs(s, n);
+     SetProperties(Properties() & kDeleteArcsProperties);
+   }
+ 
+   void DeleteArcs(StateId s) {
+-    GetState(s)->niepsilons = 0;
+-    GetState(s)->noepsilons = 0;
++    this->GetState(s)->niepsilons = 0;
++    this->GetState(s)->noepsilons = 0;
+     BaseImpl::DeleteArcs(s);
+     SetProperties(Properties() & kDeleteArcsProperties);
+   }
+@@ -322,8 +322,8 @@ template <class A>
+ VectorFstImpl<A>::VectorFstImpl(const Fst<A> &fst) {
+   SetType("vector");
+   SetProperties(fst.Properties(kCopyProperties, false) | kStaticProperties);
+-  SetInputSymbols(fst.InputSymbols());
+-  SetOutputSymbols(fst.OutputSymbols());
++  this->SetInputSymbols(fst.InputSymbols());
++  this->SetOutputSymbols(fst.OutputSymbols());
+   BaseImpl::SetStart(fst.Start());
+ 
+   for (StateIterator< Fst<A> > siter(fst);
+@@ -332,16 +332,16 @@ VectorFstImpl<A>::VectorFstImpl(const Fst<A> &fst) {
+     StateId s = siter.Value();
+     BaseImpl::AddState();
+     BaseImpl::SetFinal(s, fst.Final(s));
+-    ReserveArcs(s, fst.NumArcs(s));
++    this->ReserveArcs(s, fst.NumArcs(s));
+     for (ArcIterator< Fst<A> > aiter(fst, s);
+          !aiter.Done();
+          aiter.Next()) {
+       const A &arc = aiter.Value();
+       BaseImpl::AddArc(s, arc);
+       if (arc.ilabel == 0)
+-        ++GetState(s)->niepsilons;
++        ++this->GetState(s)->niepsilons;
+       if (arc.olabel == 0)
+-        ++GetState(s)->noepsilons;
++        ++this->GetState(s)->noepsilons;
+     }
+   }
+ }
+@@ -427,7 +427,7 @@ bool VectorFstImpl<A>::Write(ostream &strm,
+     return false;
+ 
+   for (StateId s = 0; s < NumStates(); ++s) {
+-    const VectorState<A> *state = GetState(s);
++    const VectorState<A> *state = this->GetState(s);
+     state->final.Write(strm);
+     int64 narcs = state->arcs.size();
+     WriteType(strm, narcs);

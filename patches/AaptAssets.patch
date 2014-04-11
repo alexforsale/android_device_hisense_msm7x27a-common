@@ -1,0 +1,13 @@
+diff --git a/frameworks/base/tools/aapt/Android.mk b/frameworks/base/tools/aapt/Android.mk
+index cb55a9c..e3d4970 100644
+--- a/frameworks/base/tools/aapt/Android.mk
++++ b/frameworks/base/tools/aapt/Android.mk
+@@ -28,7 +28,7 @@ LOCAL_SRC_FILES := \
+     ZipFile.cpp
+ 
+ 
+-LOCAL_CFLAGS += -Wno-format-y2k
++LOCAL_CFLAGS += -Wno-format-y2k -fpermissive
+ 
+ LOCAL_C_INCLUDES += external/expat/lib
+ LOCAL_C_INCLUDES += external/libpng

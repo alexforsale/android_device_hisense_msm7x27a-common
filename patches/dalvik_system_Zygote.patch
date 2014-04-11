@@ -1,0 +1,16 @@
+ vm/native/dalvik_system_Zygote.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/dalvik/vm/native/dalvik_system_Zygote.cpp b/dalvik/vm/native/dalvik_system_Zygote.cpp
+index 492ea4a..45f5732 100644
+--- a/dalvik/vm/native/dalvik_system_Zygote.cpp
++++ b/dalvik/vm/native/dalvik_system_Zygote.cpp
+@@ -19,7 +19,7 @@
+  */
+ #include "Dalvik.h"
+ #include "native/InternalNativePriv.h"
+-
++#include <sys/resource.h>
+ #include <signal.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>

@@ -1,0 +1,13 @@
+diff --git a/external/sqlite/dist/Android.mk b/external/sqlite/dist/Android.mk
+index 79942fd..b65fa5e 100644
+--- a/external/sqlite/dist/Android.mk
++++ b/external/sqlite/dist/Android.mk
+@@ -38,7 +38,7 @@ LOCAL_SHARED_LIBRARIES += liblog \
+ LOCAL_WHOLE_STATIC_LIBRARIES := libsqlite3_android
+ 
+ ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
+-LOCAL_WHOLE_STATIC_LIBRARIES += libqc-sqlite
++#LOCAL_WHOLE_STATIC_LIBRARIES += libqc-sqlite
+ LOCAL_SHARED_LIBRARIES += libcutils
+ endif
+ 

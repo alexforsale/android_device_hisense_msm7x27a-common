@@ -1,0 +1,17 @@
+diff --git a/external/skia/Android.mk b/external/skia/Android.mk
+index d7b0f8d..b98a631 100644
+--- a/external/skia/Android.mk
++++ b/external/skia/Android.mk
+@@ -263,9 +263,9 @@ LOCAL_STATIC_LIBRARIES := \
+ 	libwebp-decode \
+ 	libwebp-encode
+ 
+-ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
+-	LOCAL_WHOLE_STATIC_LIBRARIES += libqc-skia
+-endif
++#ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
++#	LOCAL_WHOLE_STATIC_LIBRARIES += libqc-skia
++#endif
+ 
+ 
+ LOCAL_C_INCLUDES += \

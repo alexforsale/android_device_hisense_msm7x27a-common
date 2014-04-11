@@ -1,0 +1,13 @@
+diff --git a/frameworks/compile/slang/Android.mk b/frameworks/compile/slang/Android.mk
+index 6e0a1e9..4c7f483 100644
+--- a/frameworks/compile/slang/Android.mk
++++ b/frameworks/compile/slang/Android.mk
+@@ -19,7 +19,7 @@ ifeq ($(TARGET_BUILD_APPS),)
+ 
+ LOCAL_PATH := $(call my-dir)
+ 
+-local_cflags_for_slang := -Wno-sign-promo -Wall -Wno-unused-parameter -Werror
++local_cflags_for_slang := -Wno-sign-promo -Wall -Wno-unused-parameter
+ ifeq ($(BOARD_USE_QCOM_LLVM_CLANG_RS),true)
+ 	local_cflags_for_slang += -DQCOM_LLVM
+ endif

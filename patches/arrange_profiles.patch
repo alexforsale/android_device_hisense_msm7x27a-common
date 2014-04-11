@@ -1,0 +1,16 @@
+ libpp/format_output.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/external/oprofile/libpp/format_output.h b/external/oprofile/libpp/format_output.h
+index b6c4592..8e527d5 100644
+--- a/external/oprofile/libpp/format_output.h
++++ b/external/oprofile/libpp/format_output.h
+@@ -91,7 +91,7 @@ protected:
+ 		symbol_entry const & symbol;
+ 		sample_entry const & sample;
+ 		size_t pclass;
+-		mutable counts_t & counts;
++		counts_t & counts;
+ 		extra_images const & extra;
+ 		double diff;
+ 	};

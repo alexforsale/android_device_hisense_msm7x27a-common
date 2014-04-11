@@ -1,0 +1,13 @@
+diff --git a/dalvik/vm/Dvm.mk b/dalvik/vm/Dvm.mk
+index 7a9888a..0449f06 100644
+--- a/dalvik/vm/Dvm.mk
++++ b/dalvik/vm/Dvm.mk
+@@ -256,7 +256,7 @@ ifeq ($(dvm_arch),arm)
+   endif
+ 
+   ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
+-    LOCAL_WHOLE_STATIC_LIBRARIES += libqc-dalvik
++    #LOCAL_WHOLE_STATIC_LIBRARIES += libqc-dalvik
+     LOCAL_SHARED_LIBRARIES += libqc-opt
+   endif
+ endif
