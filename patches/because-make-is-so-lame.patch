@@ -1,0 +1,46 @@
+diff --git a/build/envsetup.sh b/build/envsetup.sh
+index 45f05e8..1a0ac04 100644
+--- a/build/envsetup.sh
++++ b/build/envsetup.sh
+@@ -9,6 +9,7 @@ Invoke ". build/envsetup.sh" from your shell to add the following functions to y
+ - jgrep:   Greps on all local Java files.
+ - resgrep: Greps on all local res/*.xml files.
+ - godir:   Go to the directory containing a file.
++- mka:      Builds using SCHED_BATCH on all processors
+ 
+ Look at the source to view more functions. The complete list is:
+ EOF
+@@ -445,6 +446,7 @@ function print_lunch_menu()
+     echo
+ }
+ 
++
+ function lunch()
+ {
+     local answer
+@@ -1071,6 +1073,17 @@ function godir () {
+     cd $T/$pathname
+ }
+ 
++function mka() {
++    case `uname -s` in
++        Darwin)
++            make -j `sysctl hw.ncpu|cut -d" " -f2` "$@"
++            ;;
++        *)
++            schedtool -B -n 1 -e ionice -n 1 make -j `cat /proc/cpuinfo | grep "^processor" | wc -l` "$@"
++            ;;
++    esac
++}
++
+ # Force JAVA_HOME to point to java 1.6 if it isn't already set
+ function set_java_home() {
+     if [ ! "$JAVA_HOME" ]; then
+@@ -1097,6 +1110,7 @@ fi
+ 
+ # Execute the contents of any vendorsetup.sh files we can find.
+ for f in `/bin/ls vendor/*/vendorsetup.sh vendor/*/*/vendorsetup.sh device/*/*/vendorsetup.sh 2> /dev/null`
++
+ do
+     echo "including $f"
+     . $f

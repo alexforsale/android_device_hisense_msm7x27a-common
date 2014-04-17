@@ -1,0 +1,233 @@
+diff --git a/build/core/Makefile b/build/core/Makefile
+index 324a800..3f2f50d 100644
+--- a/build/core/Makefile
++++ b/build/core/Makefile
+@@ -1,5 +1,16 @@
+ # Put some miscellaneous rules here
+ 
++# Build system colors
++#
++# PFX: Prefix "target C++:" in yellow
++# INS: Module "Install:" output color (cyan for ics)
++
++ifneq ($(BUILD_WITH_COLORS),0)
++  CL_PFX="\033[33m"
++  CL_INS="\033[36m"
++  CL_RST="\033[0m"
++endif
++
+ # Pick a reasonable string to use to identify files.
+ ifneq "" "$(filter eng.%,$(BUILD_NUMBER))"
+   # BUILD_NUMBER has a timestamp in it, which means that
+@@ -423,6 +434,7 @@ INTERNAL_BOOTIMAGE_ARGS += --genext2fs $(MKEXT2IMG)
+ $(INSTALLED_BOOTIMAGE_TARGET): $(MKEXT2IMG) $(INTERNAL_BOOTIMAGE_FILES)
+ 	$(call pretty,"Target boot image: $@")
+ 	$(hide) $(MKEXT2BOOTIMG) $(INTERNAL_BOOTIMAGE_ARGS) --output $@
++	@echo -e ${CL_INS}"Made boot image: $@"${CL_RST}
+ 
+ else # TARGET_BOOTIMAGE_USE_EXT2 != true
+ 
+@@ -443,6 +455,7 @@ $(INSTALLED_BOOTIMAGE_TARGET): $(MKBOOTIMG) $(INTERNAL_BOOTIMAGE_FILES)
+ 	$(hide) $(call build-boot-image,$@,$(INTERNAL_BOOTIMAGE_ARGS) --ramdisk_offset $(call get-kernel-size) $(MKBOOTIMG_COMPRESSED))
+ 	$(hide) $(call install-2knand-boot-image)
+ 	$(hide) $(call assert-max-image-size,$@,$(BOARD_BOOTIMAGE_PARTITION_SIZE),raw)
++	@echo -e ${CL_INS}"Made boot image: $@"${CL_RST}
+ 
+ endif # TARGET_BOOTIMAGE_USE_EXT2
+ 
+@@ -790,7 +803,7 @@ $(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTFS) $(MKBOOTIMG) $(MINIGZIP) \
+ 	$(MKBOOTFS) $(TARGET_RECOVERY_ROOT_OUT) | $(MINIGZIP) > $(recovery_ramdisk)
+ 	$(hide) $(call build-boot-image,$@,$(INTERNAL_RECOVERYIMAGE_ARGS) --ramdisk_offset $(call get-kernel-size) $(MKBOOTIMG_COMPRESSED))
+ 	$(hide) $(call install-2knand-recovery-image)
+-	@echo ----- Made recovery image -------- $@
++	@echo -e ${CL_INS}"Made recovery image: $@"${CL_RST}
+ 	$(hide) $(call assert-max-image-size,$@,$(BOARD_RECOVERYIMAGE_PARTITION_SIZE),raw)
+ 
+ else
+@@ -947,7 +960,7 @@ endif
+ 
+ 
+ $(INSTALLED_SYSTEMIMAGE): $(BUILT_SYSTEMIMAGE) $(RECOVERY_FROM_BOOT_PATCH) | $(ACP)
+-	@echo "Install system fs image: $@"
++	@echo -e ${CL_INS}"Install system fs image: $@"${CL_RST}
+ 	$(copy-file-to-target)
+ 	$(hide) $(call assert-max-image-size,$@ $(RECOVERY_FROM_BOOT_PATCH),$(BOARD_SYSTEMIMAGE_PARTITION_SIZE),yaffs)
+ 
+@@ -1327,7 +1340,7 @@ $(BUILT_TARGET_FILES_PACKAGE): \
+ 		$(APKCERTS_FILE) \
+ 		$(HOST_OUT_EXECUTABLES)/fs_config \
+ 		| $(ACP)
+-	@echo "Package target files: $@"
++	@echo -e ${CL_PFX}"Package target files:"${CL_RST}" $@"
+ 	$(hide) rm -rf $@ $(zip_root)
+ 	$(hide) mkdir -p $(dir $@) $(zip_root)
+ 	@# Components of the recovery image
+@@ -1353,6 +1366,7 @@ endif
+ ifdef BOARD_KERNEL_PAGESIZE
+ 	$(hide) echo "$(BOARD_KERNEL_PAGESIZE)" > $(zip_root)/RECOVERY/pagesize
+ endif
++
+ 	@# Components of the boot image
+ 	$(hide) mkdir -p $(zip_root)/BOOT
+ 	$(hide) $(call package_files-copy-root, \
+@@ -1481,7 +1495,7 @@ endif
+ $(INTERNAL_MMC_OTA_PACKAGE_TARGET): KEY_CERT_PAIR := $(DEFAULT_KEY_CERT_PAIR)
+ 
+ $(INTERNAL_MMC_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(OTATOOLS)
+-	@echo "Package OTA: $@"
++	@echo -e ${CL_PFX}"Package OTA:"${CL_RST}" $@"
+ 	$(hide) ./build/tools/releasetools/ota_from_target_files -v \
+ 	   -p $(HOST_OUT) \
+            -d MMC \
+@@ -1511,7 +1525,7 @@ $(INTERNAL_UPDATE_PACKAGE_TARGET): extensions := $(TARGET_RELEASETOOLS_EXTENSION
+ endif
+ 
+ $(INTERNAL_UPDATE_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(OTATOOLS)
+-	@echo "Package: $@"
++	@echo -e ${CL_PFX}"Package:"${CL_RST}" $@"
+ 	$(hide) ./build/tools/releasetools/img_from_target_files -v \
+ 	   -s $(extensions) \
+ 	   -p $(HOST_OUT) \
+@@ -1611,7 +1625,7 @@ name := $(name)-apps-$(FILE_NAME_TAG)
+ 
+ APPS_ZIP := $(PRODUCT_OUT)/$(name).zip
+ $(APPS_ZIP): $(INSTALLED_SYSTEMIMAGE)
+-	@echo "Package apps: $@"
++	@echo -e ${CL_PFX}"Package apps:"${CL_RST}" $@"
+ 	$(hide) rm -rf $@
+ 	$(hide) mkdir -p $(dir $@)
+ 	$(hide) zip -qj $@ $(TARGET_OUT_APPS)/*
+@@ -1648,7 +1662,7 @@ name := $(TARGET_PRODUCT)-emulator-$(FILE_NAME_TAG)
+ INTERNAL_EMULATOR_PACKAGE_TARGET := $(PRODUCT_OUT)/$(name).zip
+ 
+ $(INTERNAL_EMULATOR_PACKAGE_TARGET): $(INTERNAL_EMULATOR_PACKAGE_FILES)
+-	@echo "Package: $@"
++	@echo -e ${CL_PFX}"Package:"${CL_RST}" $@"
+ 	$(hide) zip -qj $@ $(INTERNAL_EMULATOR_PACKAGE_FILES)
+ 
+ # -----------------------------------------------------------------
+diff --git a/build/core/base_rules.mk b/build/core/base_rules.mk
+index 242b53d..14871d8 100644
+--- a/build/core/base_rules.mk
++++ b/build/core/base_rules.mk
+@@ -520,11 +520,11 @@ ifndef LOCAL_UNINSTALLABLE_MODULE
+   # installation;  hence, LOCAL_ACP_UNAVAILABLE.
+ ifneq ($(LOCAL_ACP_UNAVAILABLE),true)
+ $(LOCAL_INSTALLED_MODULE): $(LOCAL_BUILT_MODULE) | $(ACP)
+-	@echo "Install: $@"
++	@echo -e ${CL_INS}"Install: $(ANDROID_BUILD_TOP)/$@"${CL_RST}
+ 	$(copy-file-to-new-target)
+ else
+ $(LOCAL_INSTALLED_MODULE): $(LOCAL_BUILT_MODULE)
+-	@echo "Install: $@"
++	@echo -e ${CL_INS}"Install: $@"${CL_RST}
+ 	$(copy-file-to-target-with-cp)
+ endif
+ 
+@@ -532,7 +532,7 @@ ifdef LOCAL_DEX_PREOPT
+ installed_odex := $(basename $(LOCAL_INSTALLED_MODULE)).odex
+ built_odex := $(basename $(LOCAL_BUILT_MODULE)).odex
+ $(installed_odex) : $(built_odex) | $(ACP)
+-	@echo "Install: $@"
++	@echo -e ${CL_INS}"Install: $@"${CL_RST}
+ 	$(copy-file-to-target)
+ 
+ $(LOCAL_INSTALLED_MODULE) : $(installed_odex)
+diff --git a/build/core/binary.mk b/build/core/binary.mk
+index bc85d0b..08ae04f 100644
+--- a/build/core/binary.mk
++++ b/build/core/binary.mk
+@@ -487,6 +487,11 @@ all_objects := \
+ 	$(proto_generated_objects) \
+ 	$(addprefix $(TOPDIR)$(LOCAL_PATH)/,$(LOCAL_PREBUILT_OBJ_FILES))
+ 
++## Allow a device's own headers to take precedence over global ones
++ifneq ($(TARGET_SPECIFIC_HEADER_PATH),)
++LOCAL_C_INCLUDES := $(TOPDIR)$(TARGET_SPECIFIC_HEADER_PATH) $(LOCAL_C_INCLUDES)
++endif
++
+ LOCAL_C_INCLUDES += $(TOPDIR)$(LOCAL_PATH) $(intermediates) $(base_intermediates)
+ 
+ ifndef LOCAL_NDK_VERSION
+diff --git a/build/core/definitions.mk b/build/core/definitions.mk
+index 8683368..b22f456 100644
+--- a/build/core/definitions.mk
++++ b/build/core/definitions.mk
+@@ -872,7 +872,7 @@ endef
+ 
+ define transform-cpp-to-o
+ @mkdir -p $(dir $@)
+-@echo "target $(PRIVATE_ARM_MODE) C++: $(PRIVATE_MODULE) <= $<"
++@echo -e ${CL_PFX}"target $(PRIVATE_ARM_MODE) C++:"${CL_RST}" $(PRIVATE_MODULE) <= $<"
+ $(hide) $(PRIVATE_CXX) \
+ 	$(addprefix -I , $(PRIVATE_C_INCLUDES)) \
+ 	$(addprefix -isystem ,\
+@@ -921,12 +921,12 @@ $(hide) $(PRIVATE_CC) \
+ endef
+ 
+ define transform-c-to-o-no-deps
+-@echo "target $(PRIVATE_ARM_MODE) C: $(PRIVATE_MODULE) <= $<"
++@echo -e ${CL_PFX}"target $(PRIVATE_ARM_MODE) C:"${CL_RST}" $(PRIVATE_MODULE) <= $<"
+ $(call transform-c-or-s-to-o-no-deps, )
+ endef
+ 
+ define transform-s-to-o-no-deps
+-@echo "target asm: $(PRIVATE_MODULE) <= $<"
++@echo -e ${CL_PFX}"target asm:"${CL_RST}" $(PRIVATE_MODULE) <= $<"
+ $(call transform-c-or-s-to-o-no-deps, $(PRIVATE_ASFLAGS))
+ endef
+ 
+@@ -947,7 +947,7 @@ endef
+ ###########################################################
+ 
+ define transform-m-to-o-no-deps
+-@echo "target ObjC: $(PRIVATE_MODULE) <= $<"
++@echo -e ${CL_PFX}"target ObjC:"${CL_RST}" $(PRIVATE_MODULE) <= $<"
+ $(call transform-c-or-s-to-o-no-deps)
+ endef
+ 
+@@ -962,7 +962,7 @@ endef
+ 
+ define transform-host-cpp-to-o
+ @mkdir -p $(dir $@)
+-@echo "host C++: $(PRIVATE_MODULE) <= $<"
++@echo -e ${CL_PFX}"host C++:"${CL_RST}" $(PRIVATE_MODULE) <= $<"
+ $(hide) $(PRIVATE_CXX) \
+ 	$(addprefix -I , $(PRIVATE_C_INCLUDES)) \
+ 	$(addprefix -isystem ,\
+@@ -1008,7 +1008,7 @@ $(hide) $(PRIVATE_CC) \
+ endef
+ 
+ define transform-host-c-to-o-no-deps
+-@echo "host C: $(PRIVATE_MODULE) <= $<"
++@echo -e ${CL_PFX}"host C:"${CL_RST}" $(PRIVATE_MODULE) <= $<"
+ $(call transform-host-c-or-s-to-o-no-deps, )
+ endef
+ 
+@@ -1462,7 +1462,7 @@ $(hide) jar $(if $(strip $(PRIVATE_JAR_MANIFEST)),-cfm,-cf) \
+ endef
+ 
+ define transform-java-to-classes.jar
+-@echo "target Java: $(PRIVATE_MODULE) ($(PRIVATE_CLASS_INTERMEDIATES_DIR))"
++@echo -e ${CL_PFX}"target Java:"${CL_RST}" $(PRIVATE_MODULE) ($(PRIVATE_CLASS_INTERMEDIATES_DIR))"
+ $(call compile-java,$(TARGET_JAVAC),$(PRIVATE_BOOTCLASSPATH))
+ $(hide) rm -rf $(PRIVATE_CLASS_INTERMEDIATES_DIR)
+ endef
+@@ -1507,7 +1507,7 @@ $(hide) mv $(PRIVATE_CLASS_INTERMEDIATES_DIR)/newstamp $(PRIVATE_CLASS_INTERMEDI
+ endef
+ 
+ define transform-java-to-classes.jar
+-@echo "target Java: $(PRIVATE_MODULE) ($(PRIVATE_CLASS_INTERMEDIATES_DIR))"
++@echo -e ${CL_PFX}"target Java:"${CL_RST}" $(PRIVATE_MODULE) ($(PRIVATE_CLASS_INTERMEDIATES_DIR))"
+ $(call compile-java,$(TARGET_JAVAC),$(PRIVATE_BOOTCLASSPATH))
+ endef
+ endif # ENABLE_INCREMENTALJAVAC
+@@ -1825,7 +1825,7 @@ endef
+ ###########################################################
+ 
+ define transform-generated-source
+-@echo "target Generated: $(PRIVATE_MODULE) <= $<"
++@echo -e ${CL_PFX}"target Generated:"${CL_RST}" $(PRIVATE_MODULE) <= $<"
+ @mkdir -p $(dir $@)
+ $(hide) $(PRIVATE_CUSTOM_TOOL)
+ endef
