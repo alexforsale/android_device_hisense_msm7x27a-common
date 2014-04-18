@@ -165,7 +165,7 @@
     <!-- traffic you should list them here. -->
     <!-- If this device is not CDMA this is ignored.  If this list is empty on -->
     <!-- a DUN-requiring CDMA device, the DUN APN will just support just DUN. -->
-    <string-array translatable="false" name="config_cdma_dun_supported_types">
+    <!--string-array translatable="false" name="config_cdma_dun_supported_types">
         <item>0</item>
         <item>1</item>
         <item>20</item>
@@ -174,7 +174,7 @@
         <item>"dun"</item>
         <item>"mms"</item>
         <item>"supl"</item>
-    </string-array>
+    </string-array-->
 
     <!-- Boolean indicating whether the wifi chipset has dual frequency band support -->
     <bool translatable="false" name="config_wifi_dual_band_support">true</bool>
