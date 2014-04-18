@@ -1,0 +1,20 @@
+diff --git a/system/vold/DirectVolume.h b/system/vold/DirectVolume.h
+index de1ed8b..3b74c83 100644
+--- a/system/vold/DirectVolume.h
++++ b/system/vold/DirectVolume.h
+@@ -21,13 +21,13 @@
+ 
+ #include "Volume.h"
+ 
+-#define MAX_PARTS 4
++#define MAX_PARTS 30
+ 
+ typedef android::List<char *> PathCollection;
+ 
+ class DirectVolume : public Volume {
+ public:
+-    static const int MAX_PARTITIONS = 4;
++    static const int MAX_PARTITIONS = 30;
+ protected:
+     PathCollection *mPaths;
+     int            mDiskMajor;
