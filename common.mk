@@ -91,7 +91,11 @@ PRODUCT_PACKAGES += \
 
 # SU
 PRODUCT_PACKAGES += \
-    Superuser
+    Superuser \
+    su
+
+PRODUCT_PACKAGES += \
+    com.android.future.usb.accessory
 
 # permission
 PRODUCT_COPY_FILES += \
