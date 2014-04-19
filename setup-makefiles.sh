@@ -63,6 +63,10 @@ PRODUCT_COPY_FILES += \\
     $OUTDIR/proprietary/system/lib/libimage-jpeg-enc-omx-comp.so:obj/lib/libimage-jpeg-enc-omx-comp.so \\
     $OUTDIR/proprietary/system/lib/libmmjpeg.so:obj/lib/libmmjpeg.so
 
+# for liboverlay
+PRODUCT_COPY_FILES += \\
+    $OUTDIR/proprietary/system/lib/libmm-abl.so:obj/lib/libmm-abl.so
+
 # Vendor extension library
 PRODUCT_PROPERTY_OVERRIDES += \\
     ro.vendor.extension_library=/system/lib/libqc-opt.so
