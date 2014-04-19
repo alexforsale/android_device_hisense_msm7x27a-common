@@ -29,7 +29,7 @@ MSM7627A_ROOT := $(MSM7627A_PATH)/prebuilt/rootdir
 
 DEVICE_PACKAGE_OVERLAYS := $(MSM7627A_PATH)/overlay
 
-$(call inherit-product, device/qcom/common/common.mk)
+$(call inherit-product, device/qcom/msm7627a/msm7627a.mk)
 
 ifneq ($(TARGET_PROVIDES_LIBSENSORS),true)
 PRODUCT_COPY_FILES += \
@@ -56,7 +56,6 @@ PRODUCT_COPY_FILES += \
     $(MSM7627A_LIB)/hw/camera.msm7627a.so:system/lib/hw/camera.msm7627a.so
 endif
 
-
 # Non-Ramdisk Init Scripts
 PRODUCT_COPY_FILES += \
     $(MSM7627A_SCRIPTS)/efsbackup.sh:system/bin/efsbackup.sh \
@@ -78,6 +77,21 @@ PRODUCT_PACKAGES += \
         MagicSmokeWallpapers \
         VisualizationWallpapers \
         librs_jni \
+
+# liballjoyn
+PRODUCT_PACKAGES += \
+    liballjoyn \
+    alljoyn-daemon \
+    libAllJoynAndroidExt
+
+# codeaurora perf
+PRODUCT_PACKAGES += \
+    org.codeaurora.Performance \
+    org.codeaurora.Performance.xml
+
+# SU
+PRODUCT_PACKAGES += \
+    Superuser
 
 # permission
 PRODUCT_COPY_FILES += \
@@ -104,31 +118,6 @@ PRODUCT_COPY_FILES += \
    system/bluetooth/data/main.le.conf:system/etc/bluetooth/main.conf
 
 PRODUCT_PROPERTY_OVERRIDES += \
-    persist.adb.notify=0 \
-    ro.setupwizard.enable_bypass=1 \
-    wifi.supplicant_scan_interval=30 \
-    ro.opengles.version=131072 \
-    net.dns1=8.8.8.8 \
-    net.dns2=8.8.4.4 \
-    ro.opengles.version=131072 \
-    ro.use_data_netmgrd=true \
-    ro.com.android.dataroaming=true \
-    ro.product.hasphonestorage=true \
-    ro.telephony.default_network=4,1 \
-    dev.pm.dyn_sample_period=700000 \
-    dev.pm.dyn_samplingrate=1 \
-    httplive.enable.discontinuity=true \
-    ro.max.fling_velocity=4000 \
-    debug.camera.landscape=true \
-    debug.camcorder.disablemeta=0 \
-    ro.qualcomm.cabl=false \
-    ro.config.ehrpd=true \
-    debug.bt.discoverable_time=0 \
-    ro.bluetooth.remote.autoconnect=true \
-    ro.qualcomm.bluetooth.sap=true \
-    ro.qualcomm.bluetooth.ftp=true \
-    ro.bluetooth.request.master=true \
-    audio.legacy.postproc=true \
-    dalvik.vm.heapstartsize=5m \
-    dalvik.vm.heapgrowthlimit=36m \
-    dalvik.vm.heapsize=128m
+       dalvik.vm.heapstartsize=5m \
+       dalvik.vm.heapgrowthlimit=36m \
+       dalvik.vm.heapsize=128m
