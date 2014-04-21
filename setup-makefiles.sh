@@ -67,10 +67,6 @@ PRODUCT_COPY_FILES += \\
 PRODUCT_COPY_FILES += \\
     $OUTDIR/proprietary/system/lib/libmm-abl.so:obj/lib/libmm-abl.so
 
-# Vendor extension library
-PRODUCT_PROPERTY_OVERRIDES += \\
-    ro.vendor.extension_library=/system/lib/libqc-opt.so
-
 PRODUCT_COPY_FILES += \\
     $OUTDIR/proprietary/system/lib/libqc-opt.so:obj/lib/libqc-opt.so
 EOF
